@@ -1,4 +1,5 @@
 local composer = require( "composer" )
+local widget = require("widget")
  
 local scene = composer.newScene()
  
@@ -7,7 +8,10 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
  
- 
+ local function onSwitchPress( event )
+    local switch = event.target
+    print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
+end
  
  
 -- -----------------------------------------------------------------------------------
@@ -32,7 +36,30 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-        print("on the settings") 
+        local radioGroup = display.newGroup()
+        local radioButton1 = widget.newSwitch(
+            {
+                left = 150,
+                top = 200,
+                style = "radio",
+                id = "RadioButton1",
+                initialSwitchState = true,
+                onPress = onSwitchPress
+            }
+        )
+        radioGroup:insert( radioButton1 )
+         
+        local radioButton2 = widget.newSwitch(
+            {
+                left = 250,
+                top = 200,
+                style = "radio",
+                id = "RadioButton2",
+                onPress = onSwitchPress
+            }
+        )
+        radioGroup:insert( radioButton2 )
+        sceneGroup:insert(radioGroup)
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
  
