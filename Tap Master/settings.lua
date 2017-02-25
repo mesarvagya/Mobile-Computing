@@ -1,25 +1,5 @@
 local composer = require( "composer" )
-local widget = require("widget")
-
-
-local function handlePlay(event)
-	if(event.phase == "ended") then
-		print("now move the scene to next scene")
-		local options = {effect = "fade", time = 800}
-		composer.gotoScene("game", options)
-		print("should have moved")
-	end
-end
-
-
-local function showOverlayModel( event )
-
-    if ( "ended" == event.phase ) then
-        print( "Button was pressed and released" )
-        composer.showOverlay( "settings", options )
-    end
-end
-
+ 
 local scene = composer.newScene()
  
 -- -----------------------------------------------------------------------------------
@@ -39,6 +19,7 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
+    
  
 end
  
@@ -51,44 +32,7 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-        local background = display.newImage("background.jpeg")
-		background.x = display.contentCenterX
-		background.y = display.contentCenterY
-		sceneGroup:insert(background)
-		local play = widget.newButton(
-		{
-			left = 50,
-			top = 50,
-			id = "playButton",
-			onEvent = handlePlay,
-			defaultFile = "rsz_playbutton.png",
-			overFile = "rsz_playbutton.png"
-
-		})
-		local settings = widget.newButton(
-		{
-			left = 50,
-			top = 50,
-			id = "settingsButton",
-			onEvent = showOverlayModel,
-			defaultFile = "settings.png",
-			overFile = "settings.png"
-
-		})
-		play.x = display.contentCenterX
-		play.y = display.contentCenterY
-
-		settings.x = 250
-		settings.y = 10
-		sceneGroup:insert(play)
-		sceneGroup:insert(settings)
-
-		local sp0090 = display.newText( "Created by:\nSarvagya Pant (sp0090)\nBidhya N. Sharma(bns0028)\n", 50, 300, native.systemFont, 20 )
-		sp0090:setFillColor( 1, 0, 0 )
-		sp0090.anchorX = 0
-		sp0090.anchorY = 0
-		sceneGroup:insert(sp0090)
- 
+        print("on the settings") 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
  
