@@ -9,8 +9,8 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 local correct_tap = 0
 local incorrect_tap = 0
-local min_value = 1
-local max_value = 5
+local min_value = 0.5
+local max_value = 3
 local counter = 0
 local positive = display.newText("",150,20,native.systemFont, 10)
 local negative = display.newText("",150,40,native.systemFont, 10)
@@ -32,26 +32,30 @@ local function negativeCount( event )
     negative.text = incorrect_tap
 end
 
-local function drawRect()
-    print("drawing rect")
+local function drawRect(event)
+    local timegot = event.source.params.time
+    local box = nil
     
     local type = ""
-    if(math.random() < 0.5) then
+    local rand = math.random()
+    if( rand < 0.5) then
         type='red'
     else
         type='blue'
     end
+    print("drwaing rect type = ", type, " random = ", rand)
     if(type == 'red') then
-        local redbox = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 50, 50, 12)
-        redbox:setFillColor(1,0,0)
-        redbox:addEventListener("tap", positiveCount)
+        box = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 100, 100, 12)
+        box:setFillColor(1,0,0)
+        box:addEventListener("tap", positiveCount)
     else
-        local bluebox = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 50, 50, 12)
-        bluebox:setFillColor(0,0,1)
-        bluebox:addEventListener("tap", negativeCount)
+        box = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 100, 100, 12)
+        box:setFillColor(0,0,1)
+        box:addEventListener("tap", negativeCount)
     end
-    box_table:insert(bluebox)
-    
+    timer.performWithDelay(timegot * 1000, function()
+        box:removeSelf()
+    end,1)
 end
 
 local function startGame(event)
@@ -59,7 +63,8 @@ local function startGame(event)
     local timegot = math.random(min_value, max_value)
     print("time ", timegot)
 
-    timer.performWithDelay(timegot * 1000, drawRect, 10)
+    local tm = timer.performWithDelay(timegot * 1000, drawRect, 10)
+    tm.params = {time=timegot}
  end
 
 local function handleReady(event)
