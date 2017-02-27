@@ -12,8 +12,10 @@ local incorrect_tap = 0
 local min_value = 0.5
 local max_value = 3
 local counter = 0
-local positive = display.newText("",150,20,native.systemFont, 10)
-local negative = display.newText("",150,40,native.systemFont, 10)
+local positive = display.newText("",200,0,native.systemFont, 15)
+local positive_label = display.newText("Correct Tap",150,0,native.systemFont, 15)
+local negative = display.newText("",200,15,native.systemFont, 15)
+local negative_label = display.newText("Incorrect Tap",150,15,native.systemFont, 15)
 local box_table = {}
 
 local function goToGameStart( event )
@@ -45,11 +47,11 @@ local function drawRect(event)
     end
     print("drwaing rect type = ", type, " random = ", rand)
     if(type == 'red') then
-        box = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 100, 100, 12)
+        box = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 150, 150, 12)
         box:setFillColor(1,0,0)
         box:addEventListener("tap", positiveCount)
     else
-        box = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 100, 100, 12)
+        box = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 150, 150, 12)
         box:setFillColor(0,0,1)
         box:addEventListener("tap", negativeCount)
     end
