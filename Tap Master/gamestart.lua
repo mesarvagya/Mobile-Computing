@@ -83,8 +83,8 @@ function scene:show( event )
 		sceneGroup:insert(play)
 		sceneGroup:insert(settings)
 
-		local sp0090 = display.newText( "Created by:\nSarvagya Pant (sp0090)\nBidhya N. Sharma(bns0028)\n", 50, 300, native.systemFont, 20 )
-		sp0090:setFillColor( 1, 0, 0 )
+		local sp0090 = display.newText( "Created by:\nSarvagya Pant (sp0090)\nBidhya N. Sharma (bns0028)\n", 40, 300, native.systemFontBold, 20 )
+		sp0090:setFillColor( 0, 0, 0 )
 		sp0090.anchorX = 0
 		sp0090.anchorY = 0
 		sceneGroup:insert(sp0090)
