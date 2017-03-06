@@ -104,7 +104,10 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-        display.setDefault("background", 1/255, 87/255, 155/255 )
+        local background = display.newImage("background.jpeg")
+        background.x = display.contentCenterX
+        background.y = display.contentCenterY
+        sceneGroup:insert(background)
 
         local button1 = widget.newButton({
             label = "Go to Main Menu",
@@ -112,19 +115,27 @@ function scene:show( event )
             emboss = false,
             -- Properties for a rounded rectangle button
             shape = "roundedRect",
-            width = 130,
+            width = 150,
             height = 40,
             cornerRadius = 2,
             fillColor = { default={240/255, 243/255, 244/255}, over={1,0.1,0.7,0.4} },
         })
+        button1.anchorX = 0
+        button1.anchorY = 0
+        button1.x = 50
+        button1.y = 5
 
         sceneGroup:insert(button1)
 
         local minLabel = display.newText(sceneGroup, "Min Value: ",60,360,native.systemFontBold,20)
+        minLabel:setFillColor(0,0,0)
         local maxLabel = display.newText(sceneGroup, "Max Value: ",60,410,native.systemFontBold,20)
+        maxLabel:setFillColor(0,0,0)
 
         minValueText = display.newText(sceneGroup, "0.5",135,360,native.systemFontBold,20)
+        minValueText:setFillColor(0,0,0)
         maxValueText = display.newText(sceneGroup, "5",135,410,native.systemFontBold,20)
+        maxValueText:setFillColor(0,0,0)
 
         local radioGroup = display.newGroup()
         local radioButton1 = widget.newSwitch(

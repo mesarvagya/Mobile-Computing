@@ -54,7 +54,7 @@ local function drawRect(event)
         box:setFillColor(0,0,1)
         box:addEventListener("tap", positiveCount)
     end
-    timer.performWithDelay(timegot * 1000, function()
+    timer.performWithDelay(timegot * 100, function()
         box:removeSelf()
     end,1)
 end
