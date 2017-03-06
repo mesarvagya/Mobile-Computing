@@ -13,6 +13,7 @@ local min_value = composer.getVariable("min_value")
 local max_value = composer.getVariable("max_value")
 local counter = 0
 local positive, positive_label, negative, negative_label
+local timer_list = {}
 
 local box_table = {}
 
@@ -54,9 +55,10 @@ local function drawRect(event)
         box:setFillColor(0,0,1)
         box:addEventListener("tap", positiveCount)
     end
-    timer.performWithDelay(timegot * 100, function()
+    local remove_timer = timer.performWithDelay(timegot * 100, function()
         box:removeSelf()
     end,1)
+    -- table.insert(timer_list, remove_timer)
 end
 
 local function startGame(event)
@@ -66,6 +68,8 @@ local function startGame(event)
 
     local tm = timer.performWithDelay(timegot * 100, drawRect, 10)
     tm.params = {time=timegot}
+    print("tm ", tm)
+    table.insert(timer_list, tm)
  end
 
 local function handleReady(event)
@@ -162,6 +166,9 @@ function scene:hide( event )
         incorrect_tap = 0
         positive.text=""
         negative.text=""
+        for i=1,#timer_list do
+            if timer_list[i] ~= nil then timer.cancel(timer_list[i]) end
+        end
  
     end
 end
