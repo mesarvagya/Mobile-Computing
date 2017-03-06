@@ -134,6 +134,7 @@ function scene:show( event )
         
         sceneGroup:insert(backbtn)
         sceneGroup:insert(readyText)
+        print("correct_tap = ", correct_tap, " incorrect_tap = ", incorrect_tap)
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
@@ -159,6 +160,8 @@ function scene:hide( event )
         print("game scene is hidden")
         correct_tap = 0
         incorrect_tap = 0
+        positive.text=""
+        negative.text=""
  
     end
 end
