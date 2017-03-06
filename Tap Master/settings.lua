@@ -104,7 +104,7 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-        display.setDefault( "background", 1/255, 87/255, 155/255 )
+        display.setDefault(sceneGroup,"background", 1/255, 87/255, 155/255 )
 
         local button1 = widget.newButton({
             label = "Go to Main Menu",

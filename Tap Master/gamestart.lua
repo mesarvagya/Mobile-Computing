@@ -16,7 +16,7 @@ local function showOverlayModel( event )
 
     if ( "ended" == event.phase ) then
         print( "Button was pressed and released" )
-        composer.showOverlay( "settings", options )
+        composer.gotoScene( "settings", options )
     end
 end
 

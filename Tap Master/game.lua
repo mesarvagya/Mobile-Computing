@@ -9,8 +9,8 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 local correct_tap = 0
 local incorrect_tap = 0
-local min_value = 0.5
-local max_value = 3
+local min_value = composer.getVariable("min_value")
+local max_value = composer.getVariable("max_value")
 local counter = 0
 local positive, positive_label, negative, negative_label
 
