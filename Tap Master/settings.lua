@@ -104,10 +104,10 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-        local background = display.newImage("background.jpeg")
-        background.x = display.contentCenterX
-        background.y = display.contentCenterY
-        sceneGroup:insert(background)
+        -- local background = display.newImage("background.jpeg")
+        -- background.x = display.contentCenterX
+        -- background.y = display.contentCenterY
+        -- sceneGroup:insert(background)
 
         local button1 = widget.newButton({
             label = "Go to Main Menu",
@@ -128,14 +128,14 @@ function scene:show( event )
         sceneGroup:insert(button1)
 
         local minLabel = display.newText(sceneGroup, "Min Value: ",60,360,native.systemFontBold,20)
-        minLabel:setFillColor(0,0,0)
+        -- minLabel:setFillColor(0,0,0)
         local maxLabel = display.newText(sceneGroup, "Max Value: ",60,410,native.systemFontBold,20)
-        maxLabel:setFillColor(0,0,0)
+        -- maxLabel:setFillColor(0,0,0)
 
         minValueText = display.newText(sceneGroup, "0.5",135,360,native.systemFontBold,20)
-        minValueText:setFillColor(0,0,0)
+        -- minValueText:setFillColor(0,0,0)
         maxValueText = display.newText(sceneGroup, "5",135,410,native.systemFontBold,20)
-        maxValueText:setFillColor(0,0,0)
+        -- maxValueText:setFillColor(0,0,0)
 
         local radioGroup = display.newGroup()
         local radioButton1 = widget.newSwitch(
@@ -237,6 +237,9 @@ function scene:hide( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
+        minValueText = ""
+        maxValueText = ""
+
  
     end
 end
