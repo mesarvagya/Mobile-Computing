@@ -24,14 +24,13 @@ end
 local function positiveCount( event )
     correct_tap = correct_tap + 1
     positive.text = correct_tap
-    -- return true
-
+    return true
 end
 
 local function negativeCount( event )
     incorrect_tap = incorrect_tap + 1
     negative.text = incorrect_tap
-    -- return true
+    return true
 end
 
 local function drawRect(event)
@@ -62,10 +61,10 @@ end
 
 local function startGame(event)
     print("game started")
-    local timegot = math.random(min_value, max_value)
-    print("time ", timegot)
+    local timegot = math.random(min_value*10, max_value*10)
+    print("time ", timegot/10)
 
-    local tm = timer.performWithDelay(timegot * 1000, drawRect, 10)
+    local tm = timer.performWithDelay(timegot * 100, drawRect, 10)
     tm.params = {time=timegot}
  end
 
@@ -74,7 +73,8 @@ local function handleReady(event)
     if(event.phase == "began") then
         print("starting game on 3 sec")
         event.target.alpha = 0
-        timer.performWithDelay(3000, startGame)
+        -- timer.performWithDelay(3000, startGame)
+        startGame()
     end 
 end
 
@@ -123,9 +123,9 @@ function scene:show( event )
         local readyText = display.newText("I am ready!!!", 150, 50, native.systemFont, 20)
         readyText:addEventListener("touch", handleReady)
 
-        positive = display.newText("",200,0,native.systemFont, 15)
+        positive = display.newText("",210,0,native.systemFont, 15)
         positive_label = display.newText("Correct Tap = ",150,0,native.systemFont, 15)
-        negative = display.newText("",200,15,native.systemFont, 15)
+        negative = display.newText("",210,15,native.systemFont, 15)
         negative_label = display.newText("Incorrect Tap = ",150,15,native.systemFont, 15)
         sceneGroup:insert(positive)
         sceneGroup:insert(positive_label)

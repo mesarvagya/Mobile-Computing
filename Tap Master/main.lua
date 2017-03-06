@@ -1,3 +1,6 @@
 local composer = require("composer")
+composer.setVariable("default_setting", true)
+composer.setVariable("min_value", 0.5)
+composer.setVariable("max_value", 5)
 display.setStatusBar(display.HiddenStatusBar)
 composer.gotoScene("gamestart")
