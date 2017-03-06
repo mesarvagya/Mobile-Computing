@@ -12,10 +12,8 @@ local incorrect_tap = 0
 local min_value = 0.5
 local max_value = 3
 local counter = 0
-local positive = display.newText("",200,0,native.systemFont, 15)
-local positive_label = display.newText("Correct Tap",150,0,native.systemFont, 15)
-local negative = display.newText("",200,15,native.systemFont, 15)
-local negative_label = display.newText("Incorrect Tap",150,15,native.systemFont, 15)
+local positive, positive_label, negative, negative_label
+
 local box_table = {}
 
 local function goToGameStart( event )
@@ -26,12 +24,14 @@ end
 local function positiveCount( event )
     correct_tap = correct_tap + 1
     positive.text = correct_tap
+    -- return true
 
 end
 
 local function negativeCount( event )
     incorrect_tap = incorrect_tap + 1
     negative.text = incorrect_tap
+    -- return true
 end
 
 local function drawRect(event)
@@ -49,11 +49,11 @@ local function drawRect(event)
     if(type == 'red') then
         box = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 150, 150, 12)
         box:setFillColor(1,0,0)
-        box:addEventListener("tap", positiveCount)
+        box:addEventListener("tap", negativeCount)
     else
         box = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 150, 150, 12)
         box:setFillColor(0,0,1)
-        box:addEventListener("tap", negativeCount)
+        box:addEventListener("tap", positiveCount)
     end
     timer.performWithDelay(timegot * 1000, function()
         box:removeSelf()
@@ -122,6 +122,15 @@ function scene:show( event )
 
         local readyText = display.newText("I am ready!!!", 150, 50, native.systemFont, 20)
         readyText:addEventListener("touch", handleReady)
+
+        positive = display.newText("",200,0,native.systemFont, 15)
+        positive_label = display.newText("Correct Tap = ",150,0,native.systemFont, 15)
+        negative = display.newText("",200,15,native.systemFont, 15)
+        negative_label = display.newText("Incorrect Tap = ",150,15,native.systemFont, 15)
+        sceneGroup:insert(positive)
+        sceneGroup:insert(positive_label)
+        sceneGroup:insert(negative)
+        sceneGroup:insert(negative_label)
         
         sceneGroup:insert(backbtn)
         sceneGroup:insert(readyText)
@@ -147,6 +156,9 @@ function scene:hide( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
+        print("game scene is hidden")
+        correct_tap = 0
+        incorrect_tap = 0
  
     end
 end
