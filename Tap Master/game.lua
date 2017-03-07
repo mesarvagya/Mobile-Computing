@@ -38,6 +38,7 @@ function scene:show( event )
   local sceneGroup = self.view
   local phase = event.phase
   local iterations = 10
+  local start_time, end_time;
 
   local function goToGameStart( event )
     local options = {effect = "fade", time = 800}
@@ -82,7 +83,12 @@ function scene:show( event )
     box:removeSelf()
     iterations = iterations - 1
     if (iterations == 0) then
-      local alert = native.showAlert( "You won!!", "You won the game :)", function(event)
+      end_time = os.time()
+      local score_correct = correct_tap / ( end_time - start_time )
+      local score_incorrect = incorrect_tap / ( end_time - start_time )
+      local msg = "You won the game :). Avg Correct Score = " .. score_correct
+      print(msg)
+      local alert = native.showAlert( "You won!!", msg , function(event)
       if ( event.action == "clicked" ) then
         local i = event.index
         if ( i == 1 ) then
@@ -105,7 +111,7 @@ function scene:show( event )
     local timegot = math.random(min_value*10, max_value*10)
     -- time_transition = timegot
     print("time ", timegot/10)
-
+    start_time = os.time()
     local tm = timer.performWithDelay(timegot * 100, drawRect, 10)
     tm.params = {time=timegot}
     print("tm ", tm)
