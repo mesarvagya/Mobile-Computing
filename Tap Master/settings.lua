@@ -91,25 +91,9 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
-end
- 
- 
--- show()
-function scene:show( event )
-    local sceneGroup = self.view
-    local phase = event.phase
-    
     local width = display.contentWidth
     local height = display.contentHeight
-
-    if ( phase == "will" ) then
-        -- Code here runs when the scene is still off screen (but is about to come on screen)
-        -- local background = display.newImage("background.jpeg")
-        -- background.x = display.contentCenterX
-        -- background.y = display.contentCenterY
-        -- sceneGroup:insert(background)
-
-        local button1 = widget.newButton({
+    local button1 = widget.newButton({
             label = "Go to Main Menu",
             onEvent = handleButtonEvent,
             emboss = false,
@@ -217,10 +201,25 @@ function scene:show( event )
         sceneGroup:insert(slider_c_max)
         sceneGroup:insert(slider_d_min)
         sceneGroup:insert(slider_d_max)
+end
+ 
+ 
+-- show()
+function scene:show( event )
+    local sceneGroup = self.view
+    local phase = event.phase
 
+    if ( phase == "will" ) then
+        print("In scene will")
+        -- Code here runs when the scene is still off screen (but is about to come on screen)
+        -- local background = display.newImage("background.jpeg")
+        -- background.x = display.contentCenterX
+        -- background.y = display.contentCenterY
+        -- sceneGroup:insert(background)
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
+        print("in scene did")
  
     end
 end
@@ -234,20 +233,17 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
- 
+        print("In scene hide will")
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
-        minValueText = ""
-        maxValueText = ""
-
- 
+        print("In scene hide did") 
     end
 end
  
  
 -- destroy()
 function scene:destroy( event )
- 
+    print("In scene destroy")
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
  
