@@ -37,6 +37,7 @@ function scene:show( event )
 
   local sceneGroup = self.view
   local phase = event.phase
+  local iterations = 10
 
   local function goToGameStart( event )
     local options = {effect = "fade", time = 800}
@@ -79,7 +80,23 @@ function scene:show( event )
     sceneGroup:insert(box)
     local remove_timer = timer.performWithDelay(timegot * 100, function()
     box:removeSelf()
+    iterations = iterations - 1
+    if (iterations == 0) then
+      local alert = native.showAlert( "You won!!", "You won the game :)", function(event)
+      if ( event.action == "clicked" ) then
+        local i = event.index
+        if ( i == 1 ) then
+          -- Do nothing; dialog will simply dismiss
+        elseif ( i == 2 ) then
+          -- Open URL if "Learn More" (second button) was clicked
+          -- system.openURL( "http://www.coronalabs.com" )
+        end
+      end
+
+      end )
+    end
     end,1)
+
     -- table.insert(timer_list, remove_timer)
   end
 
