@@ -7,7 +7,7 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
- 
+ --Changing between default and custom radio button event handler
  local function onSwitchPress( event )
     local switch = event.target
     print( "Switch with ID '"..switch.id.."' is on: "..tostring(switch.isOn) )
@@ -35,7 +35,7 @@ local scene = composer.newScene()
         composer.setVariable("max_value", last_max)
     end
 end
-
+--helper function to get min value
 local function getMin(val1)
     maxVal = composer.getVariable("max_value")
     if(val1 > 0 and val1 < maxVal) then
@@ -44,7 +44,7 @@ local function getMin(val1)
         return 0.5
     end
 end
-
+--Helper function to get max value 
 local function getMax(val1)
     minVal = composer.getVariable("min_value")
     if(val1>minVal) then
@@ -53,7 +53,7 @@ local function getMax(val1)
         return (minVal+5)%100
     end
 end
-
+--Min value slider event listener
 local function slider_c_min_listener(event)
     local currentSetting = composer.getVariable("default_setting");
     if(not currentSetting) then
@@ -65,7 +65,7 @@ local function slider_c_min_listener(event)
     print("Slider min value")
     print(composer.getVariable("min_value"))
 end
-
+--Max slider event listerner
 local function slider_c_max_listener(event)
     local currentSetting = composer.getVariable("default_setting");
     if(not currentSetting) then
@@ -78,6 +78,7 @@ local function slider_c_max_listener(event)
     print(composer.getVariable("max_value"))
 end
 
+--Back button event handler
 function handleButtonEvent(event)
     composer.gotoScene("gamestart")
 end
@@ -93,6 +94,7 @@ function scene:create( event )
     -- Code here runs when the scene is first created but has not yet appeared on screen
     local width = display.contentWidth
     local height = display.contentHeight
+    --This is button for go back event
     local button1 = widget.newButton({
             label = "Go to Main Menu",
             onEvent = handleButtonEvent,
@@ -111,17 +113,22 @@ function scene:create( event )
 
         sceneGroup:insert(button1)
 
+        --Label displaying min value
         local minLabel = display.newText(sceneGroup, "Min Value: ",60,360,native.systemFontBold,20)
         -- minLabel:setFillColor(0,0,0)
+        --Label displaying max value
         local maxLabel = display.newText(sceneGroup, "Max Value: ",60,410,native.systemFontBold,20)
         -- maxLabel:setFillColor(0,0,0)
-
+        --Text to display update min value
         minValueText = display.newText(sceneGroup, "0.5",135,360,native.systemFontBold,20)
         -- minValueText:setFillColor(0,0,0)
+        --Text to display update max value
         maxValueText = display.newText(sceneGroup, "5",135,410,native.systemFontBold,20)
         -- maxValueText:setFillColor(0,0,0)
 
+        --Radio Group to hold default and custom speed selection
         local radioGroup = display.newGroup()
+        --Default setting radio button
         local radioButton1 = widget.newSwitch(
             {
                 left = 5,
@@ -139,6 +146,7 @@ function scene:create( event )
         local max_text = display.newText( sceneGroup, "Max",25, 140, native.systemFontBold, 15 )
          
         -- Create the widget
+        --Slider for showing default value
         local slider_d_min = widget.newSlider(
             {
                 top = 80,
@@ -148,6 +156,7 @@ function scene:create( event )
             }
         )
         -- Create the widget
+        --Slider for showing default max value
         local slider_d_max = widget.newSlider(
             {
                 top = 120,
@@ -157,7 +166,7 @@ function scene:create( event )
 
             }
         )
-
+        --Custom setting radio
         local radioButton2 = widget.newSwitch(
             {
                 left = 5,
