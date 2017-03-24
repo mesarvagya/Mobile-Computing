@@ -1,7 +1,7 @@
 local composer = require( "composer" )
 local widget = require("widget")
 
-
+--This function takes to actual game start
 local function handlePlay(event)
 	if(event.phase == "ended") then
 		print("now move the scene to next scene")
@@ -11,7 +11,7 @@ local function handlePlay(event)
 	end
 end
 
-
+--This function takes to settings scenece
 local function showOverlayModel( event )
 
     if ( "ended" == event.phase ) then
@@ -51,10 +51,12 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
+        --Creates a background image
         local background = display.newImage("background.jpeg")
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
 		sceneGroup:insert(background)
+		--Play button that will start the game
 		local play = widget.newButton(
 		{
 			left = 50,
@@ -65,6 +67,7 @@ function scene:show( event )
 			overFile = "rsz_playbutton.png"
 
 		})
+		--Settings button to go to the setting scene
 		local settings = widget.newButton(
 		{
 			left = 50,

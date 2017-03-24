@@ -7,6 +7,7 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+--Variables to hold count and get the setting for min and max value
 local correct_tap = 0
 local incorrect_tap = 0
 local min_value = composer.getVariable("min_value")
@@ -40,6 +41,7 @@ function scene:show( event )
   local iterations = 10
   local start_time, end_time;
 
+  --Function to switch to game start
   local function goToGameStart( event )
     local options = {effect = "fade", time = 800}
     composer.gotoScene("gamestart", options)
@@ -57,6 +59,7 @@ function scene:show( event )
     return true
   end
 
+--Function that draws rectangles or object to click upon
   local function drawRect(event)
     local timegot = event.source.params.time
     local box = nil
@@ -105,7 +108,7 @@ function scene:show( event )
 
     -- table.insert(timer_list, remove_timer)
   end
-
+--This is function where game starts
   local function startGame(event)
     print("game started")
     local timegot = math.random(min_value*10, max_value*10)
@@ -117,7 +120,7 @@ function scene:show( event )
     print("tm ", tm)
     table.insert(timer_list, tm)
   end
-
+--Function to wait for 3 seconds
   local function handleReady(event)
     print("handling the i am ready", event.phase)
     if(event.phase == "began") then
