@@ -1,22 +1,20 @@
+local composer = require("composer")
 display.setStatusBar( display.HiddenStatusBar )
-
-local widget = require('widget')
-
-
+composer.gotoScene("gamestart")
 -----------------------------background--------------------------------
-   local options =
-   {
-      frames = {
-         { x = 0, y = 0, width = 256, height = 192}, --bg1
-         { x = 0, y = 192, width = 256, height = 192}, -- bg2
-         { x = 256, y = 192, width = 256, height = 192}, -- bg3
+background_options =
+{
+  frames = {
+     { x = 0, y = 0, width = 256, height = 192}, --bg1
+     { x = 0, y = 192, width = 256, height = 192}, -- bg2
+     { x = 256, y = 192, width = 256, height = 192}, -- bg3
 
-      }
-   };
-   local sheet = graphics.newImageSheet( "bg.png", options );
-   local bg = display.newImage (sheet, 2);
-   bg.x = display.contentWidth / 2;
-   bg.y= display.contentHeight / 2;
+  }
+};
+background_sheet = graphics.newImageSheet( "bg.png", background_options );
+-- local bg = display.newImage (background_sheet, 1);
+-- bg.x = display.contentWidth / 2;
+-- bg.y= display.contentHeight / 2;
 
 
 
@@ -38,7 +36,7 @@ local options =
 		{ x = 69, y = 79, width= 32, height= 32}, -- bubblepaper
 	}
 };
-local sheet = graphics.newImageSheet( "alex.png", options );
+alex_image_sheet = graphics.newImageSheet( "alex.png", options );
 
 -- Create animation sequence for animation 
 local seqData = { 
@@ -48,15 +46,16 @@ local seqData = {
 	{name = "alex_rock", frames={7}}, 
 	{name = "alex_paper", frames={9}}, 
 	{name = "alex_scissor", frames={8}}, 
-	
-} 
-local alex = display.newSprite (sheet, seqData); 
-alex.x = display.contentCenterX-80; 
-alex.y = display.contentCenterY+66; 
-alex.anchorX = 0; 
-alex.anchorY = 1; 
-alex:setSequence("alex_shake");
-alex:play();
+}
+
+alex_sequence = display.newSprite (alex_image_sheet, seqData);
+alex_sequence.alpha = 0
+-- alex_sequence.x = display.contentCenterX-80; 
+-- alex_sequence.y = display.contentCenterY+66; 
+-- alex_sequence.anchorX = 0; 
+-- alex_sequence.anchorY = 1; 
+-- alex_sequence:setSequence("alex_shake");
+-- alex_sequence:play();
 
 
 local bubbleSeqData = { 
@@ -65,15 +64,25 @@ local bubbleSeqData = {
 	{name = "bubble_paper", frames={12}},
 } 
 
-local bubble = display.newSprite (sheet, bubbleSeqData); 
-bubble.x = display.contentCenterX-90; 
-bubble.y = display.contentCenterY+26; 
-bubble.anchorX = 0; 
-bubble.anchorY = 1; 
-bubble.xScale = 1.2
-bubble.yScale = 1.2
-bubble:setSequence("bubble_paper");
+bubble_alex_sequence = display.newSprite (alex_image_sheet, bubbleSeqData);
+bubble_alex_sequence.alpha = 0
+-- bubble_alex_sequence.x = display.contentCenterX-90; 
+-- bubble_alex_sequence.y = display.contentCenterY+15; 
+-- bubble_alex_sequence.anchorX = 0; 
+-- bubble_alex_sequence.anchorY = 1; 
+-- bubble_alex_sequence.xScale = 1.2
+-- bubble_alex_sequence.yScale = 1.2
+-- bubble_alex_sequence:setSequence("bubble_paper");
 
+bubble_enemy_sequence = display.newSprite (alex_image_sheet, bubbleSeqData); 
+bubble_enemy_sequence.alpha = 0
+-- bubble_enemy_sequence.x = display.contentCenterX+50; 
+-- bubble_enemy_sequence.y = display.contentCenterY+15; 
+-- bubble_enemy_sequence.anchorX = 0; 
+-- bubble_enemy_sequence.anchorY = 1; 
+-- bubble_enemy_sequence.xScale = 1.2
+-- bubble_enemy_sequence.yScale = 1.2
+-- bubble_enemy_sequence:setSequence("bubble_paper");
 
 
 
@@ -112,7 +121,7 @@ local jankenOpt =
 		
 	}
 };
-local jankenSheet = graphics.newImageSheet( "enemy.png", jankenOpt );
+jankenSheet = graphics.newImageSheet( "enemy.png", jankenOpt );
 
 -- Create animation sequence janken
 local seqDataJanken = {
@@ -137,41 +146,43 @@ local seqDataJanken = {
 	{name = "enemy2_scissor", frames={17}, time = 10, loopCount=1},
 	{name = "enemy2_paper", frames={18}, time = 10, loopCount=1},
 }
-local janken = display.newSprite (jankenSheet, seqDataJanken);
-janken.x = display.contentCenterX+80;
-janken.y = display.contentCenterY+66;
-janken.anchorX = 1;
-janken.anchorY = 1;
---janken:setSequence("enemy2_rock");
+janken_sequence = display.newSprite (jankenSheet, seqDataJanken);
+janken_sequence.alpha = 0
+-- janken_sequence.x = display.contentCenterX+80;
+-- janken_sequence.y = display.contentCenterY+66;
+-- janken_sequence.anchorX = 1;
+-- janken_sequence.anchorY = 1;
+--janken_sequence:setSequence("enemy2_rock");
 
-local function play ()
+-- local function play ()
 	
-		alex:setSequence ("shake");
-		alex:play();
+-- 		alex_sequence:setSequence ("alex_shake");
+-- 		alex_sequence:play();
 
-		janken:setSequence("shake");
-		janken:play();
+-- 		janken_sequence:setSequence("boss_shake");
+-- 		janken_sequence:play();
 
 	
-end
+-- end
 
 
-local function shoot ()
+-- local function shoot ()
+-- 	print("inside the shoot")
+-- 	janken_sequence:setSequence("boss_set");
+-- 	hand = display.newImage (jankenSheet, 4, -- boss_rock
+-- 		display.contentCenterX+41,
+-- 		display.contentCenterY+42
+-- 	);
 
-	janken:setSequence("boss_set");
-	hand = display.newImage (jankenSheet, 4, -- boss_rock
-		display.contentCenterX+41,
-		display.contentCenterY+42
-	);
+-- 	alex_sequence:setSequence("alex_scissor"); -- just show rock for now
+-- 	print("ended the shoot")
+-- end
 
-	alex:setSequence("alex_paper"); -- just show rock for now
-
-end
-
-play();
+-- play();
 
 --Shake for a while before revealing the hand
-local t = timer.performWithDelay (3000, shoot, 1);
+-- local t = timer.performWithDelay (3000, shoot, 1);
+
 
 
 

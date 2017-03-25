@@ -1,5 +1,25 @@
 local composer = require( "composer" )
- 
+local widget = require("widget")
+
+--This function takes to actual game start
+local function handlePlay(event)
+	if(event.phase == "ended") then
+		print("now move the scene to next scene")
+		local options = {effect = "fade", time = 800}
+		composer.gotoScene("level1", options)
+		print("should have moved")
+	end
+end
+
+--This function takes to settings scenece
+local function showOverlayModel( event )
+
+    if ( "ended" == event.phase ) then
+        print( "Button was pressed and released" )
+        composer.gotoScene( "settings", options )
+    end
+end
+
 local scene = composer.newScene()
  
 -- -----------------------------------------------------------------------------------
@@ -31,14 +51,34 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
+        --Creates a background image
+        local background = display.newImage("background.jpeg")
+		background.x = display.contentCenterX
+		background.y = display.contentCenterY
+		sceneGroup:insert(background)
+		--Play button that will start the game
+		local play = widget.newButton(
+		{
+			left = 50,
+			top = 50,
+			id = "playButton",
+			onEvent = handlePlay,
+			defaultFile = "rsz_playbutton.png",
+			overFile = "rsz_playbutton.png"
+
+		})
+		play.x = display.contentCenterX
+		play.y = display.contentCenterY
+		sceneGroup:insert(play)
+
+		local sp0090 = display.newText( "Created by:\nSarvagya Pant (sp0090)\nBidhya N. Sharma (bns0028)\n", 40, 300, native.systemFontBold, 20 )
+		sp0090:setFillColor( 0, 0, 0 )
+		sp0090.anchorX = 0
+		sp0090.anchorY = 0
+		sceneGroup:insert(sp0090)
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
-        local bg = display.newImage (background_sheet, 1);
-        bg.x = display.contentWidth / 2;
-        bg.y= display.contentHeight / 2;
-        bg.xScale = display.contentWidth / bg.width; 
-        sceneGroup:insert(bg)
  
     end
 end
