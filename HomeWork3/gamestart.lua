@@ -4,20 +4,9 @@ local widget = require("widget")
 --This function takes to actual game start
 local function handlePlay(event)
 	if(event.phase == "ended") then
-		print("now move the scene to next scene")
 		local options = {effect = "fade", time = 800}
 		composer.gotoScene("level1", options)
-		print("should have moved")
 	end
-end
-
---This function takes to settings scenece
-local function showOverlayModel( event )
-
-    if ( "ended" == event.phase ) then
-        print( "Button was pressed and released" )
-        composer.gotoScene( "settings", options )
-    end
 end
 
 local scene = composer.newScene()

@@ -28,6 +28,18 @@ function scene:show( event )
  
     local sceneGroup = self.view
     local phase = event.phase
+
+    local function bubble_tap_handler( event )
+        local random_hand = math.random(1,3)
+        print("random ", random_hand)
+        if (random_hand == 1) then
+            event.target:setSequence("bubble_rock");
+        elseif (random_hand == 2) then
+            event.target:setSequence("bubble_paper");
+        elseif (random_hand == 3) then
+            event.target:setSequence("bubble_scissor");
+        end
+    end
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
@@ -38,8 +50,26 @@ function scene:show( event )
         bg.x = display.contentWidth / 2;
         bg.y= display.contentHeight / 2;
         bg.xScale = display.contentWidth / bg.width; 
-        sceneGroup:insert(bg)
- 
+        sceneGroup:insert(bg) 
+
+        local alex_kid = alex_sequence
+        alex_kid.x = display.contentCenterX-80; 
+        alex_kid.y = display.contentCenterY+66; 
+        alex_kid.anchorX = 0; 
+        alex_kid.anchorY = 1;
+        alex_kid.alpha = 1
+        sceneGroup:insert(alex_kid)
+
+        local alex_bubble = bubble_alex_sequence
+        alex_bubble.alpha = 1
+        alex_bubble.x = display.contentCenterX-90; 
+        alex_bubble.y = display.contentCenterY+15; 
+        alex_bubble.anchorX = 0; 
+        alex_bubble.anchorY = 1; 
+        alex_bubble.xScale = 1.2
+        alex_bubble.yScale = 1.2
+        alex_bubble:addEventListener("tap", bubble_tap_handler);
+        sceneGroup:insert(alex_bubble)
     end
 end
  
