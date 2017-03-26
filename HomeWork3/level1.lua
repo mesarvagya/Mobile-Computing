@@ -24,6 +24,7 @@ function scene:create( event )
 
     current_hand = 1
     match_count = 3
+    alex_score_count = 0
     selected_hand = nil
     alex_move_table = {[1] = "alex_rock", [2] ="alex_paper", [3] = "alex_scissor"};
     boss_move_table = {[1] = "enemy1_rock", [2] ="enemy1_paper", [3] = "enemy1_scissor"};
@@ -104,6 +105,7 @@ function scene:show( event )
                  display.contentCenterX+55, 
                  display.contentCenterY+50
              );
+            sceneGroup:insert(hand)
             print("Match number : "..match_count)
             print("Computer move : "..computer_move.." user move : "..alex_hand)
             local result = rpcJudge(alex_hand, computer_move)
@@ -111,6 +113,7 @@ function scene:show( event )
             audio.play(soundTable["resultSound"])
             if(result == "win") then
                 alex_score.text = alex_score.text + 1
+                alex_score_count = alex_score_count + 1
                 match_count = match_count - 1
                 win_msg.text = "Victory!"
             elseif(result == "lose") then
@@ -135,12 +138,23 @@ function scene:show( event )
                     scene:show(event) 
                 end,1)
             else
-                local options = {effect = "fade", time = 400}
-                composer.gotoScene("end", options)
+                if(alex_score_count >= 2) then
+                    local options = {
+                                    effect = "fade", 
+                                    time = 400,
+                                    params = {
+                                            level = 2
+                                        }   
+                                    }
+                    composer.gotoScene("levelbreak", options)
+                else
+                    local options = {effect = "fade", time = 1000}
+                    composer.gotoScene("end", options)
+                end
             end
         else
             print("No move selected from player");
-            local options = {effect = "fade", time = 400}
+            local options = {effect = "fade", time = 1000}
             composer.gotoScene("end", options)
         end
     end
@@ -200,10 +214,14 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
- 
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
- 
+        alex_score_count = 0
+        alex_score.text = "0"
+        enemy_score.text = "0"
+        current_hand = 1
+        match_count = 3
+        win_msg.text = ""
     end
 end
  

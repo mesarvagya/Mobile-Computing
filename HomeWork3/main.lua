@@ -13,12 +13,15 @@ function rpcJudge(user, computer)
     end
 end
 
+-------------------------Array of level transition message---------
+level1_to_2 = {"Lets dive into a more serious battle", " That was easy right!! Check this out"}
+level2_to_3 = {"You got one more", "Wanna GO for the ultimate??"}
+
 -----------------------------Sound Table Required for every scene-----
 soundTable = {
 	selectSound = audio.loadSound( "select.wav" ),
 	resultSound = audio.loadSound( "result.wav" ), 
 }
-
 -----------------------------background--------------------------------
 background_options =
 {
