@@ -17,31 +17,6 @@ local scene = composer.newScene()
 function scene:create( event )
  
     local sceneGroup = self.view
-    local params = event.params
-    local nextLevel = params.level
-    -- Code here runs when the scene is first created but has not yet appeared on screen 
-    local index = math.random(1, 2)   
-    local lvlmsg = nil
-
-    if(nextLevel == 2) then
-        lvlmsg = level1_to_2[index]
-    elseif(nextLevel == 3) then
-        lvlmsg = level2_to_3[index]
-    end
-
-    local gotomsg = "Go to level : "..nextLevel
-    local nextlevelfile = "level"..nextLevel
-
-    local levelmessage = display.newText(sceneGroup, lvlmsg, display.contentWidth/2, display.contentHeight/4, native.systemFontBold, 15)
-    local gotolevelmsg = display.newText(sceneGroup, gotomsg, display.contentWidth/2, display.contentHeight/3, native.systemFontBold, 20)
-    gotolevelmsg:addEventListener("tap", 
-        function(event)
-            -- body
-            print("In here to go next level")
-            local options = {effect = "fade", time = 500}
-            composer.gotoScene(nextlevelfile, options)
-        end
-     )
 end
  
  
@@ -56,6 +31,31 @@ function scene:show( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
+        local params = event.params
+        local nextLevel = params.level
+        -- Code here runs when the scene is first created but has not yet appeared on screen 
+        local index = math.random(1, 2)   
+        local lvlmsg = nil
+
+        if(nextLevel == 2) then
+            lvlmsg = level1_to_2[index]
+        elseif(nextLevel == 3) then
+            lvlmsg = level2_to_3[index]
+        end
+
+        local gotomsg = "Go to level : "..nextLevel
+        local nextlevelfile = "level"..nextLevel
+
+        levelmessage = display.newText(sceneGroup, lvlmsg, display.contentWidth/2, display.contentHeight/4, native.systemFontBold, 15)
+        gotolevelmsg = display.newText(sceneGroup, gotomsg, display.contentWidth/2, display.contentHeight/3, native.systemFontBold, 20)
+        gotolevelmsg:addEventListener("tap", 
+            function(event)
+                -- body
+                print("In here to go next level")
+                local options = {effect = "fade", time = 500}
+                composer.gotoScene(nextlevelfile, options)
+            end
+         )
  
     end
 end
@@ -72,6 +72,8 @@ function scene:hide( event )
         
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
+        levelmessage:removeSelf()
+        gotolevelmsg:removeSelf()
  
     end
 end
