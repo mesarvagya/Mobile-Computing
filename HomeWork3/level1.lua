@@ -17,6 +17,11 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
+    alex_kid = nil 
+    boss_level1 = nil 
+    alex_bubble = nil
+    hand = nil
+
     current_hand = 1
     match_count = 3
     selected_hand = nil
@@ -24,56 +29,7 @@ function scene:create( event )
     boss_move_table = {[1] = "enemy1_rock", [2] ="enemy1_paper", [3] = "enemy1_scissor"};
     alex_bubble_table = {[1] = "bubble_rock", [2] ="bubble_paper", [3] = "bubble_scissor"};
 
-end
- 
- 
--- show()
-function scene:show( event )
- 
-    local sceneGroup = self.view
-    local phase = event.phase
-    local alex_kid = nil 
-    local boss_level1 = nil 
-    local alex_bubble = nil
-
-    local function bubble_tap_handler(event)
-        -- body 
-        selected_hand = current_hand           
-    end
-
-    function shoot()
-        if(selected_hand) then
-        -- body
-            local computer_move = math.random(1, 3)
-            local alex_hand = selected_hand % 3 + 1
-            local alex_move = (alex_move_table[alex_hand]);
-
-            alex_bubble:setSequence(alex_bubble_table[alex_hand]);
-            alex_kid:setSequence(alex_move)
-
-            -- boss_level1:setSequence(boss_move_table[computer_move])
-
-            boss_level1:setSequence("enemy1_set");
-            local hand = display.newImage (jankenSheet, 9 + computer_move, -- boss_rock
-                 display.contentCenterX+60, 
-                 display.contentCenterY+50
-             );
-            print("Computer move : "..computer_move.." user move : "..alex_hand)
-            local result = rpcJudge(alex_hand, computer_move)
-            print(result)
-        else
-            print("No move selected from player");
-            alex_kid:pause()
-            boss_level1:pause()
-        end
-    end
-
-    if ( phase == "will" ) then
-        -- Code here runs when the scene is still off screen (but is about to come on screen)
- 
-    elseif ( phase == "did" ) then
-        -- Code here runs when the scene is entirely on screen
-        local bg = display.newImage (background_sheet, 1);
+    local bg = display.newImage (background_sheet, 1);
         bg.x = display.contentWidth / 2;
         bg.y= display.contentHeight / 2;
         bg.xScale = display.contentWidth / bg.width; 
@@ -108,6 +64,86 @@ function scene:show( event )
         boss_level1.anchorY = 1;
         sceneGroup:insert( boss_level1)
 
+    local leveltext = display.newText( sceneGroup, "Level 1", display.contentWidth/2, display.contentHeight/12, native.systemFontBold, 16)
+    local alextext = display.newText( sceneGroup, "Alex Kidd:", display.contentWidth/8, display.contentHeight/12, native.systemFontBold, 16)
+    local enemytext = display.newText( sceneGroup, "Enemy:", display.contentWidth/1.3, display.contentHeight/12, native.systemFontBold, 16)
+
+    alex_score = display.newText( sceneGroup, "0", display.contentWidth/3.7, display.contentHeight/12, native.systemFontBold, 16)
+    enemy_score = display.newText( sceneGroup, "0", display.contentWidth/1.13, display.contentHeight/12, native.systemFontBold, 16)
+
+    win_msg = display.newText( sceneGroup, "", display.contentWidth/2, display.contentHeight/1.2, native.systemFontBold, 30)
+end
+ 
+ 
+-- show()
+function scene:show( event )
+ 
+    local sceneGroup = self.view
+    local phase = event.phase
+    
+    local function bubble_tap_handler(event)
+        -- body 
+        selected_hand = current_hand           
+    end
+
+    function shoot()
+        if(selected_hand) then
+        -- body
+            local computer_move = math.random(1, 3)
+            local alex_hand = selected_hand % 3 + 1
+            local alex_move = (alex_move_table[alex_hand]);
+
+            alex_bubble:setSequence(alex_bubble_table[alex_hand]);
+            alex_kid:setSequence(alex_move)
+
+            -- boss_level1:setSequence(boss_move_table[computer_move])
+
+            boss_level1:setSequence("enemy1_set");
+            hand = display.newImage (jankenSheet, 9 + computer_move, -- boss_rock
+                 display.contentCenterX+55, 
+                 display.contentCenterY+50
+             );
+            print("Match number : "..match_count)
+            print("Computer move : "..computer_move.." user move : "..alex_hand)
+            local result = rpcJudge(alex_hand, computer_move)
+            print(result)
+
+            if(result == "win") then
+                alex_score.text = alex_score.text + 1
+                match_count = match_count - 1
+                win_msg.text = "Victory!"
+            elseif(result == "lose") then
+                enemy_score.text = enemy_score.text + 1
+                match_count = match_count - 1
+                win_msg.text = "You lose"
+            else
+                win_msg.text = "Draw"
+            end
+
+            if(match_count > 0) then
+                local pause_timer = timer.performWithDelay(2000,
+                function ()
+                    -- body
+                    alex_kid:pause()
+                    boss_level1:pause()
+                    hand:removeSelf()
+                    alex_kid:setSequence ("alex_shake");
+                    current_hand = 1
+                    selected_hand = nil
+                    win_msg.text = ""
+                    scene:show(event) 
+                end,1)
+            end
+        else
+            print("No move selected from player");
+        end
+    end
+
+    if ( phase == "will" ) then
+        -- Code here runs when the scene is still off screen (but is about to come on screen)
+ 
+    elseif ( phase == "did" ) then
+        -- Code here runs when the scene is entirely on screen
         -- ::play::
         local shake_count = 10
         moveChooseTimer = timer.performWithDelay(500, 
