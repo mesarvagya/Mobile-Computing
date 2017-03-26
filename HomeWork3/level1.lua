@@ -1,7 +1,5 @@
 local composer = require( "composer" )
- 
 local scene = composer.newScene()
- 
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -19,7 +17,10 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
- 
+    current_hand = 1
+    alex_move_table = {[1] = "alex_rock", [2] ="alex_paper", [3] = "alex_scissor"};
+    boss_move_table = {[1] = "enemy1_rock", [2] ="enemy1_paper", [3] = "enemy1_scissor"};
+
 end
  
  
@@ -28,19 +29,43 @@ function scene:show( event )
  
     local sceneGroup = self.view
     local phase = event.phase
+    local alex_kid = nil 
+    local boss_level1 = nil 
 
-    local function bubble_tap_handler( event )
-        local random_hand = math.random(1,3)
-        print("random ", random_hand)
-        if (random_hand == 1) then
-            event.target:setSequence("bubble_rock");
-        elseif (random_hand == 2) then
-            event.target:setSequence("bubble_paper");
-        elseif (random_hand == 3) then
-            event.target:setSequence("bubble_scissor");
-        end
+    local function bubble_tap_handler(event)
+        -- body
+        timer.pause(moveChooseTimer)
+        print("Move Choose Timer paused")
+        alex_kid:setSequence ("alex_shake");
+        alex_kid:play();  
+
+        boss_level1:setSequence("enemy1_shake");
+        boss_level1:play()
+
+        level1gameplay = timer.performWithDelay(3000,
+            function ()
+                -- body
+                local computer_move = math.random(1, 3)
+                local alex_hand = current_hand % 3 + 1
+                local alex_move = (alex_move_table[alex_hand]);
+
+                alex_kid:setSequence(alex_move)
+
+                -- boss_level1:setSequence(boss_move_table[computer_move])
+
+                boss_level1:setSequence("enemy1_set");
+                local hand = display.newImage (jankenSheet, 9 + computer_move, -- boss_rock
+                     display.contentCenterX+60, 
+                     display.contentCenterY+50
+                 );
+
+
+                print("Computer move : "..computer_move.." user move : "..alex_hand)
+                local result = rpcJudge(alex_hand, computer_move)
+                print(result)
+            end, 1)
     end
- 
+
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
  
@@ -52,7 +77,7 @@ function scene:show( event )
         bg.xScale = display.contentWidth / bg.width; 
         sceneGroup:insert(bg) 
 
-        local alex_kid = alex_sequence
+        alex_kid = alex_sequence
         alex_kid.x = display.contentCenterX-80; 
         alex_kid.y = display.contentCenterY+66; 
         alex_kid.anchorX = 0; 
@@ -69,7 +94,31 @@ function scene:show( event )
         alex_bubble.xScale = 1.2
         alex_bubble.yScale = 1.2
         alex_bubble:addEventListener("tap", bubble_tap_handler);
-        sceneGroup:insert(alex_bubble)
+        sceneGroup:insert(alex_bubble);
+
+
+        boss_level1 = janken_sequence
+        boss_level1:setSequence("enemy1_set")
+        boss_level1:setFrame(7)
+        boss_level1.alpha = 1
+        boss_level1.x = display.contentCenterX+80;
+        boss_level1.y = display.contentCenterY+66;
+        boss_level1.anchorX = 1;
+        boss_level1.anchorY = 1;
+        sceneGroup:insert( boss_level1)
+
+        moveChooseTimer = timer.performWithDelay(1000, 
+            function()
+                if (current_hand == 1) then
+                    alex_bubble:setSequence("bubble_rock");
+                elseif (current_hand == 2) then
+                    alex_bubble:setSequence("bubble_paper");
+                elseif (current_hand == 3) then
+                    alex_bubble:setSequence("bubble_scissor");
+                end
+                current_hand = ((current_hand + 1) % 3) + 1
+                return
+            end, 0)
     end
 end
  

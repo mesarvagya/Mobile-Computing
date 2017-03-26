@@ -28,7 +28,35 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
- 
+    local w = display.contentWidth
+    local h = display.contentHeight
+    local background = display.newImage("background.jpeg")
+	background.x = display.contentCenterX
+	background.y = display.contentCenterY
+	sceneGroup:insert(background)
+	--Play button that will start the game
+	local gameNameText = display.newText( sceneGroup, "Janken", w/2, h/4, native.systemFontBold, 80 )
+	gameNameText:setFillColor(0.1, 0.2, 0.9)
+
+	local play = widget.newButton(
+	{
+		left = 50,
+		top = 50,
+		id = "playButton",
+		onEvent = handlePlay,
+		defaultFile = "rsz_playbutton.png",
+		overFile = "rsz_playbutton.png"
+
+	})
+	play.x = display.contentCenterX
+	play.y = display.contentCenterY
+	sceneGroup:insert(play)
+
+	local sp0090 = display.newText( "Created by:\nSarvagya Pant (sp0090)\nBidhya N. Sharma (bns0028)\n", 40, 300, native.systemFontBold, 20 )
+	sp0090:setFillColor( 0, 0, 0 )
+	sp0090.anchorX = 0
+	sp0090.anchorY = 0
+	sceneGroup:insert(sp0090)
 end
  
  
@@ -41,30 +69,6 @@ function scene:show( event )
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
         --Creates a background image
-        local background = display.newImage("background.jpeg")
-		background.x = display.contentCenterX
-		background.y = display.contentCenterY
-		sceneGroup:insert(background)
-		--Play button that will start the game
-		local play = widget.newButton(
-		{
-			left = 50,
-			top = 50,
-			id = "playButton",
-			onEvent = handlePlay,
-			defaultFile = "rsz_playbutton.png",
-			overFile = "rsz_playbutton.png"
-
-		})
-		play.x = display.contentCenterX
-		play.y = display.contentCenterY
-		sceneGroup:insert(play)
-
-		local sp0090 = display.newText( "Created by:\nSarvagya Pant (sp0090)\nBidhya N. Sharma (bns0028)\n", 40, 300, native.systemFontBold, 20 )
-		sp0090:setFillColor( 0, 0, 0 )
-		sp0090.anchorX = 0
-		sp0090.anchorY = 0
-		sceneGroup:insert(sp0090)
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen

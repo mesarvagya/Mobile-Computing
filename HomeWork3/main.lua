@@ -1,6 +1,18 @@
 local composer = require("composer")
 display.setStatusBar( display.HiddenStatusBar )
 composer.gotoScene("gamestart")
+
+-----------------------------Main Game Logic--------------------
+function rpcJudge(user, computer)
+	if ((computer) % 3 + 1 == user) then 
+		return "win" --User wins
+	elseif ((user) % 3 + 1 == computer) then 
+    	return "lose" --User lose
+	else
+    	return "draw" --Draw
+    end
+end
+
 -----------------------------background--------------------------------
 background_options =
 {
@@ -103,16 +115,16 @@ local jankenOpt =
 		{x= 178, y= 62, width= 23, height= 31 }, -- 8. enemy1_shake2
 		{x= 236, y= 62, width= 15, height= 31 }, -- 9. enemy1_set
 		{x= 270, y= 62, width= 16, height= 31 }, -- 10. enemy1_rock
-		{x= 287, y= 62, width= 16, height= 31 }, -- 11. enemy1_paper
-		{x= 304, y= 62, width= 16, height= 31 }, -- 12. enemy1_scissor
+		{x= 304, y= 62, width= 16, height= 31 }, -- 11. enemy1_paper
+		{x= 287, y= 62, width= 16, height= 31 }, -- 12. enemy1_scissor
 
 
 		{x= 153, y= 96, width= 23, height= 31 }, -- 13. enemy2_shake1
 		{x= 178, y= 96, width= 23, height= 31 }, -- 14. enemy2_shake2
 		{x= 236, y= 96, width= 15, height= 31 }, -- 15. enemy2_set
 		{x= 270, y= 96, width= 16, height= 31 }, -- 16. enemy2_rock
-		{x= 287, y= 96, width= 16, height= 31 }, -- 17. enemy2_paper
-		{x= 304, y= 96, width= 16, height= 31 }, -- 18. enemy2_scissor
+		{x= 304, y= 96, width= 16, height= 31 }, -- 17. enemy2_paper
+		{x= 287, y= 96, width= 16, height= 31 }, -- 18. enemy2_scissor
 
 	--[[
 		{x= 69, y= 13, width= 41, height= 48 }, --flap1
