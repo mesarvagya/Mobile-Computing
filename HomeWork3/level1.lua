@@ -121,7 +121,7 @@ function scene:show( event )
             end
 
             if(match_count > 0) then
-                local pause_timer = timer.performWithDelay(2000,
+                local pause_timer = timer.performWithDelay(3000,
                 function ()
                     -- body
                     alex_kid:pause()
@@ -146,7 +146,7 @@ function scene:show( event )
         -- Code here runs when the scene is entirely on screen
         -- ::play::
         local shake_count = 10
-        moveChooseTimer = timer.performWithDelay(500, 
+        moveChooseTimer = timer.performWithDelay(1000, 
         function() -- This timer performs bubble change
             shake_count = shake_count - 1
 
