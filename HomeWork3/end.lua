@@ -18,13 +18,6 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
-    local endmsg = display.newText( sceneGroup,"Game Over", display.contentWidth/2, display.contentHeight/3, native.systemFontBold, 35);
-    local gotoplay = display.newText(sceneGroup, "Go to Start",display.contentWidth/2, display.contentHeight/2, native.systemFontBold, 25)
-    gotoplay:addEventListener("tap", 
-        function(event)
-            local options = {effect = "fade", time = 400}
-            composer.gotoScene("gamestart", options)
-    end)
 end
  
  
@@ -33,13 +26,22 @@ function scene:show( event )
  
     local sceneGroup = self.view
     local phase = event.phase
- 
+    local params = event.params
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
- 
+        winmessage = display.newText(sceneGroup, params.message, display.contentWidth/2, display.contentHeight/12, native.systemFontBold, 20)
+        endmsg = display.newText( sceneGroup,"Game Over", display.contentWidth/2, display.contentHeight/3, native.systemFontBold, 35);
+        buttonrect = display.newRoundedRect( sceneGroup, display.contentWidth/2, display.contentHeight/2, 150, 60, 10)
+        buttonrect:setFillColor(0.1, 0.2, 0.9 )
+        gotoplay = display.newText(sceneGroup, "Play Again!!",display.contentWidth/2, display.contentHeight/2, native.systemFontBold, 25)
+        gotoplay:addEventListener("tap", 
+            function(event)
+                local options = {effect = "fade", time = 400}
+                composer.gotoScene("gamestart", options)
+            end)
     end
 end
  
@@ -55,7 +57,10 @@ function scene:hide( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
- 
+        endmsg:removeSelf()
+        gotoplay:removeSelf()
+        winmessage:removeSelf()
+        buttonrect:removeSelf()
     end
 end
  

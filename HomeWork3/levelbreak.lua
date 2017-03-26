@@ -43,10 +43,13 @@ function scene:show( event )
             lvlmsg = level2_to_3[index]
         end
 
-        local gotomsg = "Go to level : "..nextLevel
+        local gotomsg = "Play level "..nextLevel
         local nextlevelfile = "level"..nextLevel
 
-        levelmessage = display.newText(sceneGroup, lvlmsg, display.contentWidth/2, display.contentHeight/4, native.systemFontBold, 15)
+        winmessage = display.newText(sceneGroup, params.message, display.contentWidth/2, display.contentHeight/12, native.systemFontBold, 20)
+        levelmessage = display.newText(sceneGroup, lvlmsg, display.contentWidth/2, display.contentHeight/6, native.systemFontBold, 15)
+        buttonrect = display.newRoundedRect( sceneGroup, display.contentWidth/2, display.contentHeight/3, 120, 50, 10)
+        buttonrect:setFillColor(0.1, 0.2, 0.9 )
         gotolevelmsg = display.newText(sceneGroup, gotomsg, display.contentWidth/2, display.contentHeight/3, native.systemFontBold, 20)
         gotolevelmsg:addEventListener("tap", 
             function(event)
@@ -74,7 +77,8 @@ function scene:hide( event )
         -- Code here runs immediately after the scene goes entirely off screen
         levelmessage:removeSelf()
         gotolevelmsg:removeSelf()
- 
+        winmessage:removeSelf()
+        buttonrect:removeSelf()
     end
 end
  

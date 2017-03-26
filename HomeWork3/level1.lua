@@ -160,18 +160,26 @@ function scene:show( event )
                         alex_kid_lvl1:setSequence ("alex_shake");
                     end, 1)
                 if(alex_score_count >= 2) then
+                    local msg = "You won : "..alex_score_count.." - "..(3-alex_score_count)
+                    print(msg)
                     local options = {
                                     effect = "fade", 
                                     time = 400,
                                     params = {
-                                            level = 2
+                                            level = 2,
+                                            message = msg
                                         }   
                                     }
                     --Intermediate scene between each level
                     composer.gotoScene("levelbreak", options)
                 else
                     --If alex kid loses go to the end
-                    local options = {effect = "fade", time = 1000}
+                    local msg = "You lost : "..alex_score_count.." - "..(3-alex_score_count)
+                    local options = {effect = "fade", time = 1000,
+                                    params = {
+                                            message = msg
+                                        }
+                                    }
                     composer.gotoScene("end", options)
                 end
             end
@@ -179,7 +187,7 @@ function scene:show( event )
             ---If played does not chose any action during the game time 
             ---then go to the end scene
             print("No move selected from player");
-            local options = {effect = "fade", time = 1000}
+            local options = {effect = "fade", time = 1000, params = {message=""}}
             composer.gotoScene("end", options)
         end
     end
