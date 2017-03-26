@@ -107,7 +107,7 @@ function scene:show( event )
             --Computer move sprite
             boss_level1:setSequence("enemy1_set");
             hand = display.newImage (jankenSheet, 9 + computer_move, -- boss_rock
-                 display.contentCenterX+55, 
+                 display.contentCenterX+58, 
                  display.contentCenterY+50
              );
             sceneGroup:insert(hand)
