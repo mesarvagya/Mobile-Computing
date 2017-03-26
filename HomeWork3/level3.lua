@@ -25,6 +25,7 @@ function scene:create( event )
     current_hand = 1
     match_count = 5
     alex_score_count = 0
+    enemy_score_count = 0
     selected_hand = nil
     alex_move_table = {[1] = "alex_rock", [2] ="alex_paper", [3] = "alex_scissor"};
     boss_move_table = {[1] = "boss_rock", [2] ="boss_paper", [3] = "boss_scissor"};
@@ -127,6 +128,7 @@ function scene:show( event )
             elseif(result == "lose") then
                 ---If enemy wins its score is updated and you lose msg is displayed
                 enemy_score.text = enemy_score.text + 1
+                enemy_score_count =  enemy_score_count + 1
                 match_count = match_count - 1
                 win_msg.text = "You lose"
             else
@@ -199,6 +201,8 @@ function scene:show( event )
             scene:create(event)
         end
         print("lvl3 scene already exits")
+        alex_score.text = alex_score_count
+        enemy_score.text = enemy_score_count
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         -- ::play::
@@ -271,6 +275,8 @@ function scene:hide( event )
         win_msg.text = ""
         selected_hand = nil
         created_lvl3 = false
+        alex_score.text = ""
+        enemy_score.text =""
     end
 end
  

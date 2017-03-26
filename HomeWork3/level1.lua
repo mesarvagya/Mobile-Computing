@@ -95,7 +95,7 @@ function scene:show( event )
         -- body
             ---Randomly generate the computer move
             local computer_move = math.random(1, 3)
-            -- local computer_move = 1
+            local computer_move = 1
             ---Get the move selected by user
             local alex_hand = selected_hand % 3 + 1
             --Chose corresponding move sprite
@@ -274,6 +274,8 @@ function scene:hide( event )
         win_msg.text = ""
         selected_hand = nil
         created_lvl1 = false
+        alex_score.text = ""
+        enemy_score.text =""
     end
 end
  
