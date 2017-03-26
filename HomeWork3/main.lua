@@ -13,6 +13,12 @@ function rpcJudge(user, computer)
     end
 end
 
+-----------------------------Sound Table Required for every scene-----
+soundTable = {
+	selectSound = audio.loadSound( "select.wav" ),
+	resultSound = audio.loadSound( "result.wav" ), 
+}
+
 -----------------------------background--------------------------------
 background_options =
 {

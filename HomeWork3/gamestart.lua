@@ -4,7 +4,7 @@ local widget = require("widget")
 --This function takes to actual game start
 local function handlePlay(event)
 	if(event.phase == "ended") then
-		local options = {effect = "fade", time = 800}
+		local options = {effect = "fade", time = 500}
 		composer.gotoScene("level1", options)
 	end
 end

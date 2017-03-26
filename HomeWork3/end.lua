@@ -1,5 +1,4 @@
-local composer = require( "composer" )
- 
+local composer = require( "composer") 
 local scene = composer.newScene()
  
 -- -----------------------------------------------------------------------------------
@@ -19,7 +18,13 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
- 
+    local endmsg = display.newText( sceneGroup,"Game Over", display.contentWidth/2, display.contentHeight/3, native.systemFontBold, 35);
+    local gotoplay = display.newText(sceneGroup, "Go to Start",display.contentWidth/2, display.contentHeight/2, native.systemFontBold, 25)
+    gotoplay:addEventListener("tap", 
+        function(event)
+            local options = {effect = "fade", time = 400}
+            composer.gotoScene("gamestart", options)
+    end)
 end
  
  

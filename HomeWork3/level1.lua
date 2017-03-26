@@ -83,6 +83,7 @@ function scene:show( event )
     
     local function bubble_tap_handler(event)
         -- body 
+        audio.play(soundTable["selectSound"])
         selected_hand = current_hand           
     end
 
@@ -107,7 +108,7 @@ function scene:show( event )
             print("Computer move : "..computer_move.." user move : "..alex_hand)
             local result = rpcJudge(alex_hand, computer_move)
             print(result)
-
+            audio.play(soundTable["resultSound"])
             if(result == "win") then
                 alex_score.text = alex_score.text + 1
                 match_count = match_count - 1
@@ -133,9 +134,14 @@ function scene:show( event )
                     win_msg.text = ""
                     scene:show(event) 
                 end,1)
+            else
+                local options = {effect = "fade", time = 400}
+                composer.gotoScene("end", options)
             end
         else
             print("No move selected from player");
+            local options = {effect = "fade", time = 400}
+            composer.gotoScene("end", options)
         end
     end
 
@@ -145,7 +151,7 @@ function scene:show( event )
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         -- ::play::
-        local shake_count = 10
+        local shake_count = 5
         moveChooseTimer = timer.performWithDelay(1000, 
         function() -- This timer performs bubble change
             shake_count = shake_count - 1
@@ -163,7 +169,7 @@ function scene:show( event )
                 print("Time over ")
                 shoot()
             end
-        end, 10)
+        end, 5)
 
         timer.pause(moveChooseTimer)
         local count_down = display.newText( sceneGroup, "3", display.contentWidth/2, display.contentHeight/2, native.systemFontBold, 200)
