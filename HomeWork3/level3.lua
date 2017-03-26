@@ -161,7 +161,7 @@ function scene:show( event )
                         alex_kid_lvl3:setSequence ("alex_shake");
                     end, 1)
                 if(alex_score_count >= 3) then
-                    local msg = "You won : "..alex_score_count.." - "..(3-alex_score_count)
+                    local msg = "You won : "..alex_score_count.." - "..(5-alex_score_count)
                     print(msg)
                     local options = {
                                     effect = "fade", 
@@ -174,7 +174,7 @@ function scene:show( event )
                     composer.gotoScene("end", options)
                 else
                     --If alex kid loses go to the end
-                    local msg = "You lost : "..alex_score_count.." - "..(3-alex_score_count)
+                    local msg = "You lost : "..alex_score_count.." - "..(5-alex_score_count)
                     local options = {effect = "fade", time = 1000,
                                     params = {
                                             message = msg

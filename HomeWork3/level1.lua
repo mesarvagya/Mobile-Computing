@@ -25,6 +25,7 @@ function scene:create( event )
     current_hand = 1
     match_count = 3
     alex_score_count = 0
+    enemy_score_count = 0
     selected_hand = nil
     alex_move_table = {[1] = "alex_rock", [2] ="alex_paper", [3] = "alex_scissor"};
     boss_move_table = {[1] = "enemy1_rock", [2] ="enemy1_paper", [3] = "enemy1_scissor"};
@@ -69,8 +70,8 @@ function scene:create( event )
     local alextext = display.newText( sceneGroup, "Alex Kidd:", display.contentWidth/8, display.contentHeight/12, native.systemFontBold, 16)
     local enemytext = display.newText( sceneGroup, "Enemy:", display.contentWidth/1.3, display.contentHeight/12, native.systemFontBold, 16)
     ---The actual score texts
-    alex_score = display.newText( sceneGroup, "0", display.contentWidth/3.7, display.contentHeight/12, native.systemFontBold, 16)
-    enemy_score = display.newText( sceneGroup, "0", display.contentWidth/1.13, display.contentHeight/12, native.systemFontBold, 16)
+    alex_score = display.newText( sceneGroup, "", display.contentWidth/3.7, display.contentHeight/12, native.systemFontBold, 16)
+    enemy_score = display.newText( sceneGroup, "", display.contentWidth/1.13, display.contentHeight/12, native.systemFontBold, 16)
     --The win msg displayed after each game
     win_msg = display.newText( sceneGroup, "", display.contentWidth/2, display.contentHeight/1.2, native.systemFontBold, 30)
 end
@@ -127,6 +128,7 @@ function scene:show( event )
             elseif(result == "lose") then
                 ---If enemy wins its score is updated and you lose msg is displayed
                 enemy_score.text = enemy_score.text + 1
+                enemy_score_count =  enemy_score_count + 1
                 match_count = match_count - 1
                 win_msg.text = "You lose"
             else
@@ -199,6 +201,8 @@ function scene:show( event )
             scene:create(event)
         end
         print("Lvl1 scene already exists")
+        alex_score.text = alex_score_count
+        enemy_score.text = enemy_score_count
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         -- ::play::
