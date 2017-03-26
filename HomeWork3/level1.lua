@@ -93,8 +93,8 @@ function scene:show( event )
         if(selected_hand) then
         -- body
             ---Randomly generate the computer move
-            -- local computer_move = math.random(1, 3)
-            local computer_move = 1
+            local computer_move = math.random(1, 3)
+            -- local computer_move = 1
             ---Get the move selected by user
             local alex_hand = selected_hand % 3 + 1
             --Chose corresponding move sprite
