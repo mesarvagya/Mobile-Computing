@@ -9,11 +9,14 @@ physics.setDrawMode ("normal");
 physics.setGravity (0,0);
 
 local zone = nil
+local winning_text = nil;
 local board = {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
 local player = 1; -- swap between 0 and 1
 local client_socket = nil;
 
 local receive_timer = nil;
+local global_display_items = {}
+global_display_items.game_items = {}
 
 local function mark(x,y)
     if (board[x][y] ~= -1) then  -- space not empty!
@@ -25,8 +28,10 @@ local function mark(x,y)
   --place the piece on the board (visual)
   local _x, _y = 
   zone:localToContent(75+150*(x-1) - 225, 75+150*(y-1) - 225);
-  piece:new(player, _x, _y);    
+  local pix = piece:new(player, _x, _y);    
   -- player = (player + 1) % 2;
+
+  table.insert(global_display_items.game_items,pix) 
   return true;
 end
 
@@ -42,8 +47,9 @@ local function mark_for_server(p,x,y)
   --place the piece on the board (visual)
   local _x, _y = 
   zone:localToContent(75+150*(x-1) - 225, 75+150*(y-1) - 225);
-  piece:new(p, _x, _y);    
+  local pix = piece:new(p, _x, _y);    
   -- player = (player + 1) % 2;
+  table.insert(global_display_items.game_items,pix) 
   return true;
 end
 
@@ -98,7 +104,8 @@ end
 
 local function sendMove(event)
   print("Client my move at:", event.x, event.y);
-  local sent, msg =   client_socket:send(event.player .. "," .. event.x .. "," .. event.y .."\r\n");
+  local game_type = 0 -- shows that no one has won.
+  local sent, msg =   client_socket:send(game_type .. "," .. event.player .. "," .. event.x .. "," .. event.y .."\r\n");
   print("client sent the move to server")
 end
 
@@ -116,9 +123,14 @@ local function startConnect(event)
 end
 
 local function if_won_game(event)
-    -- local sent, msg =   client_socket:send(player .. "," .. 0 .. "," .. 0 .."\r\n");
+    local game_type = 1 -- shows that client haswon.
+    local sent, msg =   client_socket:send(game_type .. "," .. player .. "," .. 0 .. "," .. 0 .."\r\n");
     print("sent winning message from client")
-    Runtime:removeEventListener("tap", zone_handler)
+    winning_text.text = "Client Won the game !!!"
+    timer.cancel(receive_timer)
+    zone:removeEventListener("tap", zone_handler)
+    client_socket:close()
+    composer.gotoScene("gamestart", {effect="fade", time=2000})
 end
 
 Runtime:addEventListener("won_game", if_won_game)
@@ -129,7 +141,6 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
- local global_display_items = {}
  
  
  
@@ -160,6 +171,13 @@ function scene:show( event )
         background:setFillColor(0.5,0.5,0.9)
         sceneGroup:insert(background)
         global_display_items.background = background
+
+        winning_text = display.newText("",250,200,native.systemFont, 32)
+        winning_text:setFillColor(1,0,0)
+        winning_text.anchorX = 0
+        winning_text.anchorY = 0
+        sceneGroup:insert(winning_text)
+        global_display_items.winning_text = winning_text
 
         zone = display.newRect (display.contentCenterX, display.contentCenterY, 450,450);
         zone.strokeWidth = 2;
@@ -204,11 +222,24 @@ function scene:show( event )
             if (not err) then            
                  print("message from server is ", msg)
                  local data = split(msg, ",")
-                 local server_player = tonumber(data[1])
-                 local server_x = tonumber(data[2])
-                 local server_y = tonumber(data[3])
-                 print(server_player, server_x, server_y, board[server_x][server_y])
-                 mark_for_server(server_player, server_x, server_y)
+                 local game_type = tonumber(data[1])
+                 local server_player = tonumber(data[2])
+                 local server_x = tonumber(data[3])
+                 local server_y = tonumber(data[4])
+                 if(game_type == 1) then
+                    print("player ", server_player, " won the game")
+                    timer.cancel(receive_timer)
+                    zone:removeEventListener("tap", zone_handler)
+                    client_socket:close()
+                    if(server_player == 0) then
+                        winning_text.text = "Server Won the game !!!"
+                    elseif(server_player == 1) then
+                        winning_text.text = "Client Won the game !!!"
+                    end
+                    composer.gotoScene("gamestart", {effect="fade", time=2000})
+                 else
+                    mark_for_server(server_player, server_x, server_y)
+                 end
             end
 
         end
@@ -228,10 +259,17 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
+        local game_items = global_display_items.game_items
+        for i, v in ipairs(game_items) do
+          if(v ~= nil and v.shape~=nil) then
+            v.shape:removeSelf()
+            v.shape = nil
+            v = nil
+          end
+        end
  
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
- 
     end
 end
  
