@@ -12,11 +12,13 @@ local zone = nil
 local winning_text = nil
 local board = {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
 local player = 0; -- swap between 0 and 1
+local game_count = 0
 local global_display_items = {}
 global_display_items.game_items = {}
 
 local server = assert(socket.bind("*", 20140));
-local client = nil;
+print("server in bind ", server)
+local client;
 local client_receive_timer = nil;
 
 local function mark(x,y)
@@ -41,6 +43,7 @@ local function mark_for_client(p,x,y)
 
   -- mark the game board (logical)
   board[x][y] = p; 
+  game_count = game_count + 1
   --place the piece on the board (visual)
   local _x, _y = zone:localToContent(75+150*(x-1) - 225, 75+150*(y-1) - 225);
   local pix = piece:new(p, _x, _y);
@@ -53,6 +56,7 @@ end
 local function check_win()
     --check columns
     local winner = nil;
+    print("client in check_win ", client)
     for i=1, 3 do
         if (board[i][1] == board[i][2] and 
             board[i][1] == board[i][3] and 
@@ -80,10 +84,17 @@ local function check_win()
    print("winner is player ", winner)
    if(winner ~= nil) then
         Runtime:dispatchEvent({name="won_game", winner=winner})
-    end
+   end
+   if(winner == nil and game_count == 9) then
+        print("dispatching the game draw event")
+        Runtime:dispatchEvent({name="draw_game"})
+   end
 end
 
 local function zone_handler(event)
+    print("game count in server is ", game_count)
+    print("client in zone_handler ", client)
+    if(game_count == 9) then check_win() end
    local x, y = event.target:contentToLocal(event.x, event.y);
    x = x + 225;  -- conversion
    y = y + 225;  -- conversion
@@ -93,6 +104,7 @@ local function zone_handler(event)
    if (mark(x,y) == false) then   --bad move
     return;
    end
+   game_count = game_count + 1
    -- zone:removeEventListener("tap", zone_handler);
    Runtime:dispatchEvent({name="moved", x=x, y=y, player=player})
    check_win()
@@ -101,6 +113,7 @@ end
 local function sendMove(event)
   print("Server made my move at:", event.x, event.y);
   local game_type = 0 -- shows that no one has won.
+  print("client is ", client)
   local sent, msg =   client:send(game_type .. "," .. event.player .. "," .. event.x .. "," .. event.y .."\r\n");
   print("server sent the message to client")
 end
@@ -114,6 +127,7 @@ local function startListening(event)
         event.target.alpha = 0
         client = server:accept(); -- accept: BLOCKING call.
         print("connection is done. now running receive timer")
+        print("client in startListening ", client)
         client:settimeout(0);
         timer.resume(client_receive_timer)
     end
@@ -125,17 +139,29 @@ local function if_won_game(event)
     print("sent winning message from server")
     winning_text.text = "Server Won the game !!!"
     timer.cancel(client_receive_timer)
-    print("timer cancelled")
     zone:removeEventListener("tap", zone_handler)
-    print("zone removeEventListener")
     client:close()
-    print("client close")
     server:close()
-    print("server close")
+    composer.removeScene("server")
     composer.gotoScene("gamestart", {effect="fade", time=2000})
 end
 
 Runtime:addEventListener("won_game", if_won_game)
+
+local function if_draw_game(event)
+    local game_type = 2 -- shows that game is draw.
+    local sent, msg =   client:send(game_type .. "," .. player .. "," .. 0 .. "," .. 0 .."\r\n");
+    print("sent draw message from server")
+    winning_text.text = "Game is Draw !!!"
+    timer.cancel(client_receive_timer)
+    zone:removeEventListener("tap", zone_handler)
+    client:close()
+    server:close()
+    composer.removeScene("server")
+    composer.gotoScene("gamestart", {effect="fade", time=2000})
+end
+
+Runtime:addEventListener("draw_game", if_draw_game)
 local scene = composer.newScene()
  
 -- -----------------------------------------------------------------------------------
@@ -220,6 +246,7 @@ function scene:show( event )
         -- Code here runs when the scene is entirely on screen
         local function RCV(event)
             msg, err = client:receive('*l');
+            -- print("msg in server", msg)
             if (not err) then            
                  print("message from client is ", msg)
                  local data = split(msg, ",")
@@ -238,9 +265,19 @@ function scene:show( event )
                     elseif(client_player == 1) then
                         winning_text.text = "Client Won the game !!!"
                     end
+                    composer.removeScene("server")
                     composer.gotoScene("gamestart", {effect="fade", time=2000})
-                else
+                elseif(game_type == 0) then
                     mark_for_client(client_player, client_x, client_y) 
+                elseif(game_type == 2) then
+                    print("game is draw")
+                    timer.cancel(client_receive_timer)
+                    zone:removeEventListener("tap", zone_handler)
+                    client:close()
+                    server:close()
+                    winning_text.text = "Game is Draw !!!"
+                    composer.removeScene("server")
+                    composer.gotoScene("gamestart", {effect="fade", time=2000})
                 end          
             end
 
@@ -261,14 +298,6 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
-        local game_items = global_display_items.game_items
-        for i, v in ipairs(game_items) do
-          if(v ~= nil and v.shape~=nil) then
-            v.shape:removeSelf()
-            v.shape = nil
-            v = nil
-          end
-        end
  
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
@@ -281,6 +310,27 @@ function scene:destroy( event )
  
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
+    local game_items = global_display_items.game_items
+        for i, v in ipairs(game_items) do
+          if(v ~= nil and v.shape~=nil) then
+            v.shape:removeSelf()
+            v.shape = nil
+            v = nil
+          end
+        end
+        print("scene destroy server", client, server)
+        if(client ~= nil) then
+            client:close()
+            client = nil
+        end
+        if(server ~= nil) then
+            server:close()
+            server = nil
+        end
+        game_count = 0
+        Runtime:removeEventListener("moved", sendMove);
+        Runtime:removeEventListener("won_game", if_won_game);
+        Runtime:removeEventListener("draw_game", if_draw_game)
  
 end
  
