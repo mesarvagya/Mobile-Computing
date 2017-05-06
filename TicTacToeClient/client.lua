@@ -48,6 +48,39 @@ local function mark_for_server(p,x,y)
 end
 
 
+
+local function check_win()
+    --check columns
+    local winner = nil;
+    for i=1, 3 do
+        if (board[i][1] == board[i][2] and 
+            board[i][1] == board[i][3] and 
+            board[i][1] ~= -1) then
+            winner = board[i][1]     
+        end
+    end
+
+   --check rows
+   for i=1, 3 do
+    if (board[1][i] == board[2][i] and 
+        board[1][i] == board[3][i] and 
+        board[1][i] ~= -1) then
+        winner = board[1][i]
+     end
+   end
+
+   --check diagonals
+   if(board[1][1] == board[2][2] and board[1][1] == board[3][3] and board[1][1] ~= -1 and board[2][2] ~= -1 and board[3][3] ~= -1) then
+        winner = board[1][1]
+   end
+   if(board[1][3] == board[2][2] and board[1][3] == board[3][1] and board[1][3] ~= -1 and board[2][2] ~= -1 and board[3][1] ~= -1) then
+        winner = board[1][3]
+   end
+   if(winner ~= nil) then
+        Runtime:dispatchEvent({name="won_game", winner=winner})
+    end
+end
+
 local function zone_handler(event)
    local x, y = event.target:contentToLocal(event.x, event.y);
    x = x + 225;  -- conversion
@@ -59,7 +92,9 @@ local function zone_handler(event)
     return;
    end
    Runtime:dispatchEvent({name="moved", x=x, y=y, player=player})
+   check_win()
 end
+
 
 local function sendMove(event)
   print("Client my move at:", event.x, event.y);
@@ -68,21 +103,6 @@ local function sendMove(event)
 end
 
 Runtime:addEventListener("moved", sendMove);
--- local function check_win()
---     --check columns
---   for i=1, 3 do
---     if (board[i][1] == board[i][2] and 
---         board[i][1] == board[i][3] and 
---         board[i][1] ~= -1) then
---       local winner = tostring(board[i][1]).." wins!";       
---       display.newText(winner, 100, 200, native.systemFont, 40);
---      end
---    end
-
---    --check rows
-
---    --check diagonals
--- end
 
 
 local function startConnect(event)
@@ -94,6 +114,14 @@ local function startConnect(event)
         timer.resume(receive_timer)
     end
 end
+
+local function if_won_game(event)
+    -- local sent, msg =   client_socket:send(player .. "," .. 0 .. "," .. 0 .."\r\n");
+    print("sent winning message from client")
+    Runtime:removeEventListener("tap", zone_handler)
+end
+
+Runtime:addEventListener("won_game", if_won_game)
 
 local scene = composer.newScene()
  
