@@ -18,6 +18,7 @@ local game_count = 0
 local receive_timer = nil;
 local global_display_items = {}
 global_display_items.game_items = {}
+local restartButton
 
 local function mark(x,y)
     if (board[x][y] ~= -1) then  -- space not empty!
@@ -113,6 +114,12 @@ local function zone_handler(event)
 end
 
 
+local function restartGame(event)
+  -- body
+    composer.removeScene("client")
+    composer.gotoScene("gamestart", {effect="fade", time=2000})
+end
+
 local function sendMove(event)
   print("Client my move at:", event.x, event.y);
   local game_type = 0 -- shows that no one has won.
@@ -141,8 +148,9 @@ local function if_won_game(event)
     timer.cancel(receive_timer)
     zone:removeEventListener("tap", zone_handler)
     client_socket:close()
-    composer.removeScene("client")
-    composer.gotoScene("gamestart", {effect="fade", time=2000})
+    restartButton.alpha = 1
+    -- composer.removeScene("client")
+    -- composer.gotoScene("gamestart", {effect="fade", time=2000})
 end
 
 Runtime:addEventListener("won_game", if_won_game)
@@ -155,8 +163,9 @@ local function if_draw_game(event)
     timer.cancel(receive_timer)
     zone:removeEventListener("tap", zone_handler)
     client_socket:close()
-    composer.removeScene("client")
-    composer.gotoScene("gamestart", {effect="fade", time=2000})
+    restartButton.alpha = 1
+    -- composer.removeScene("client")
+    -- composer.gotoScene("gamestart", {effect="fade", time=2000})
 end
 
 Runtime:addEventListener("draw_game", if_draw_game)
@@ -240,6 +249,21 @@ function scene:show( event )
         sceneGroup:insert(listening)
         global_display_items.listening = listening
 
+        restartButton = widget.newButton({
+          left = 150,
+          top = 10,
+          id = "listenButton",
+          onEvent = restartGame,
+          defaultFile = "restart.png",
+          overFile = "restart.png"
+        })
+        restartButton.anchorX = 0
+        restartButton.anchorY = 0
+        restartButton:scale(2,2)
+        restartButton.alpha = 0
+        sceneGroup:insert(restartButton)
+        global_display_items.restartButton = restartButton
+
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
@@ -263,8 +287,9 @@ function scene:show( event )
                     elseif(server_player == 1) then
                         winning_text.text = "Client/Diamond Won the game !!!"
                     end
-                    composer.removeScene("client")
-                    composer.gotoScene("gamestart", {effect="fade", time=2000})
+                    -- composer.removeScene("client")
+                    -- composer.gotoScene("gamestart", {effect="fade", time=2000})
+                    restartButton.alpha = 1
                  elseif(game_type == 0) then
                     mark_for_server(server_player, server_x, server_y)
                  elseif(game_type == 2) then
@@ -273,8 +298,9 @@ function scene:show( event )
                     zone:removeEventListener("tap", zone_handler)
                     client_socket:close()
                     winning_text.text = "Game is Draw !!!"
-                    composer.removeScene("client")
-                    composer.gotoScene("gamestart", {effect="fade", time=2000})
+                    restartButton.alpha = 1
+                    -- composer.removeScene("client")
+                    -- composer.gotoScene("gamestart", {effect="fade", time=2000})
                  end
             end
 

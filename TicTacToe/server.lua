@@ -15,6 +15,7 @@ local player = 0; -- swap between 0 and 1
 local game_count = 0
 local global_display_items = {}
 global_display_items.game_items = {}
+local restartButton;
 
 local server = assert(socket.bind("*", 20140));
 print("server in bind ", server)
@@ -121,6 +122,12 @@ end
 Runtime:addEventListener("moved", sendMove);
 
 
+local function restartGame(event)
+  -- body
+    composer.removeScene("server")
+    composer.gotoScene("gamestart", {effect="fade", time=2000})
+end
+
 local function startListening(event)
     if(event.phase == "began") then
         print("waiting for connection from client")
@@ -142,8 +149,7 @@ local function if_won_game(event)
     zone:removeEventListener("tap", zone_handler)
     client:close()
     server:close()
-    composer.removeScene("server")
-    composer.gotoScene("gamestart", {effect="fade", time=2000})
+    restartButton.alpha = 1
 end
 
 Runtime:addEventListener("won_game", if_won_game)
@@ -157,8 +163,7 @@ local function if_draw_game(event)
     zone:removeEventListener("tap", zone_handler)
     client:close()
     server:close()
-    composer.removeScene("server")
-    composer.gotoScene("gamestart", {effect="fade", time=2000})
+    restartButton.alpha = 1
 end
 
 Runtime:addEventListener("draw_game", if_draw_game)
@@ -241,6 +246,21 @@ function scene:show( event )
         sceneGroup:insert(listening)
         global_display_items.listening = listening
 
+        restartButton = widget.newButton({
+          left = 150,
+          top = 10,
+          id = "listenButton",
+          onEvent = restartGame,
+          defaultFile = "restart.png",
+          overFile = "restart.png"
+        })
+        restartButton.anchorX = 0
+        restartButton.anchorY = 0
+        restartButton:scale(2,2)
+        restartButton.alpha = 0
+        sceneGroup:insert(restartButton)
+        global_display_items.restartButton = restartButton
+
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
@@ -265,8 +285,9 @@ function scene:show( event )
                     elseif(client_player == 1) then
                         winning_text.text = "Client/Diamond Won the game !!!"
                     end
-                    composer.removeScene("server")
-                    composer.gotoScene("gamestart", {effect="fade", time=2000})
+                    -- composer.removeScene("server")
+                    -- composer.gotoScene("gamestart", {effect="fade", time=2000})
+                    restartButton.alpha = 1
                 elseif(game_type == 0) then
                     mark_for_client(client_player, client_x, client_y) 
                 elseif(game_type == 2) then
@@ -276,8 +297,9 @@ function scene:show( event )
                     client:close()
                     server:close()
                     winning_text.text = "Game is Draw !!!"
-                    composer.removeScene("server")
-                    composer.gotoScene("gamestart", {effect="fade", time=2000})
+                    -- composer.removeScene("server")
+                    -- composer.gotoScene("gamestart", {effect="fade", time=2000})
+                    restartButton.alpha = 1
                 end          
             end
 
