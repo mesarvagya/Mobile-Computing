@@ -137,7 +137,7 @@ local function if_won_game(event)
     local game_type = 1 -- shows that client haswon.
     local sent, msg =   client_socket:send(game_type .. "," .. player .. "," .. 0 .. "," .. 0 .."\r\n");
     print("sent winning message from client")
-    winning_text.text = "Client Won the game !!!"
+    winning_text.text = "Client/Diamond Won the game !!!"
     timer.cancel(receive_timer)
     zone:removeEventListener("tap", zone_handler)
     client_socket:close()
@@ -259,9 +259,9 @@ function scene:show( event )
                     zone:removeEventListener("tap", zone_handler)
                     client_socket:close()
                     if(server_player == 0) then
-                        winning_text.text = "Server Won the game !!!"
+                        winning_text.text = "Server/Circle Won the game !!!"
                     elseif(server_player == 1) then
-                        winning_text.text = "Client Won the game !!!"
+                        winning_text.text = "Client/Diamond Won the game !!!"
                     end
                     composer.removeScene("client")
                     composer.gotoScene("gamestart", {effect="fade", time=2000})
